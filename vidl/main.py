@@ -61,11 +61,14 @@ def main():
             }
         ]
     else:
-        # Video settings (always includes sound)
-        # We added [vcodec^=avc] to force the widely compatible H.264 codec
+        # Video settings
+        # Loosened filters: Grabs the best video/audio up to the target resolution.
+        # The final '/best' is a safety net so it grabs *something* if the resolution criteria completely fails.
         ydl_opts["format"] = (
-            f"bestvideo[vcodec^=avc][height<={resolution}]+bestaudio[ext=m4a]/best[height<={resolution}]"
+            f"bestvideo[height<={resolution}]+bestaudio/best[height<={resolution}]/best"
         )
+        # Force yt-dlp/ffmpeg to merge the final file into the user's chosen format (mp4 or mkv)
+        ydl_opts["merge_output_format"] = file_type
 
     # Execute the Download
     print(f"\nStarting download for {url}...")
